@@ -1,11 +1,11 @@
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#ifndef SIGNALS_H
+#define SIGNALS_H
 
-#include "calc.h"
 #include <gtk/gtk.h>
+#include "calc.h"
 
 typedef struct{
-    GtkEntry *display;
+    GtkWidget *display;
     double result;
     char pending_op;
     int fresh_input;

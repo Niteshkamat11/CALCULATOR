@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-#include "calc.h"
+#include "../include/calc.h"
 
 double calc_evaluate(double a, double b, char op,int *err){
     *err = 0;

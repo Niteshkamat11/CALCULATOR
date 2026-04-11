@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "signals.h"
+#include "../include/signals.h"
 
 //for all the digit 0-9
 static void on_digit(GtkButton *btn, gpointer user_data) {
@@ -29,12 +29,12 @@ static void on_operator(GtkButton *btn, gpointer user_data) {
         double second = atof(current);
         state->result = calc_evaluate(state->result, second, state->pending_op, &err);
 
-        char buff[128];
-        snprintf(buff, sizeof(buff), "%.10g", state->result);
-        gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
    } else {
         state->result = atof(current);
     }
+    char buff[128];
+    snprintf(buff, sizeof(buff), "%.10g %s", state->result,label);
+    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
 
     state->pending_op = label[0];
     state->fresh_input = 1;
@@ -72,7 +72,7 @@ static void on_clear(GtkButton *btn , gpointer user_data){
 
 }
 static  void on_delete(GtkButton *btn , gpointer user_data){
-    calstate *state = (calcstate *)user_data;
+    calcstate *state = (calcstate *)user_data;
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
     int len  = strlen(current);
     if(len<=1){
@@ -87,7 +87,7 @@ static  void on_delete(GtkButton *btn , gpointer user_data){
     
 }
 //connecting the signal with function above 
-void signals_connect_all(GtkBuilder *builder, calcstate *state) {
+void signal_connect_all(GtkBuilder *builder, calcstate *state) {
     
     state->display = GTK_WIDGET(gtk_builder_get_object(builder, "display_entry"));
 

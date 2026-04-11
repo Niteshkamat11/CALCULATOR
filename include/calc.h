@@ -1,6 +1,6 @@
 #ifndef CALC_H
 #define CALC_H
 
-void calc_evaluate(double a , double b , int *err , char op);
+double calc_evaluate(double a , double b , char op  , int *err);
 
 #endif
