@@ -61,3 +61,66 @@ static void on_equals(GtkButton *btn, gpointer user_data) {
     state->fresh_input = 1;
 }
 
+static void on_clear(GtkButton *btn , gpointer user_data){
+    calcstate *state = (calcstate *)user_data;
+    gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
+
+    state->pending_op = 0;
+    state->result = 0;
+    state->fresh_input = 1;
+
+
+}
+static  void on_delete(GtkButton *btn , gpointer user_data){
+    calstate *state = (calcstate *)user_data;
+    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
+    int len  = strlen(current);
+    if(len<=1){
+        gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
+        state->fresh_input = 1;
+    }else{
+        char buff[128];
+        strncpy(buff, current,len-1);
+        buff[len-1] = '\0';
+        gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
+    }
+    
+}
+//connecting the signal with function above 
+void signals_connect_all(GtkBuilder *builder, calcstate *state) {
+    
+    state->display = GTK_WIDGET(gtk_builder_get_object(builder, "display_entry"));
+
+    
+    const char *digits[] = {
+        "btn_0", "btn_1", "btn_2", "btn_3", "btn_4", 
+        "btn_5", "btn_6", "btn_7", "btn_8", "btn_9", "btn_dot"
+    };
+    for (int i = 0; i < 11; i++) {
+        GObject *btn = gtk_builder_get_object(builder, digits[i]);
+        if (btn) {
+            g_signal_connect(btn, "clicked", G_CALLBACK(on_digit), state);
+        }
+    }
+
+    
+    const char *ops[] = {"btn_add", "btn_sub", "btn_mul", "btn_div", "btn_percentage", "btn_bracket"};
+    for (int i = 0; i < 6; i++) {
+        GObject *btn = gtk_builder_get_object(builder, ops[i]);
+        if (btn) {
+            g_signal_connect(btn, "clicked", G_CALLBACK(on_operator), state);
+        }
+    }
+
+    g_signal_connect(gtk_builder_get_object(builder, "btn_clear"), "clicked", G_CALLBACK(on_clear), state);
+    g_signal_connect(gtk_builder_get_object(builder, "btn_delete"), "clicked", G_CALLBACK(on_delete), state);
+    g_signal_connect(gtk_builder_get_object(builder, "btn_eq"), "clicked", G_CALLBACK(on_equals), state);
+}
+
+
+
+
+
+
+
+

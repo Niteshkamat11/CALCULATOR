@@ -152,7 +152,6 @@
             <child>
               <object class="GtkButton" id="btn_clear">
                 <property name="label">AC</property>
-                <signal name="clicked" handler="on_click_btn_clear"/>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">0</property>
@@ -162,7 +161,6 @@
             <child>
               <object class="GtkButton" id="btn_bracket">
                 <property name="label">()</property>
-                <signal name="clicked" handler="on_click_btn_bracket"/>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">0</property>
@@ -172,7 +170,6 @@
             <child>
               <object class="GtkButton" id="btn_percentage">
                 <property name="label">%</property>
-                <signal name="clicked" handler="on_click_btn_percentage"/>
                 <layout>
                   <property name="column">2</property>
                   <property name="row">0</property>
@@ -182,7 +179,6 @@
             <child>
               <object class="GtkButton" id="btn_div">
                 <property name="label">÷</property>
-                <signal name="clicked" handler="on_click_btn_div"/>
                 <layout>
                   <property name="column">3</property>
                   <property name="row">0</property>
@@ -192,7 +188,6 @@
             <child>
               <object class="GtkButton" id="btn_7">
                 <property name="label">7</property>
-                <signal name="clicked" handler="on_click_btn_7"/>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">1</property>
@@ -202,7 +197,6 @@
             <child>
               <object class="GtkButton" id="btn_8">
                 <property name="label">8</property>
-                <signal name="clicked" handler="on_click_btn_8"/>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">1</property>
@@ -212,7 +206,6 @@
             <child>
               <object class="GtkButton" id="btn_9">
                 <property name="label">9</property>
-                <signal name="clicked" handler="on_click_btn_9"/>
                 <layout>
                   <property name="column">2</property>
                   <property name="row">1</property>
@@ -222,7 +215,6 @@
             <child>
               <object class="GtkButton" id="btn_mul">
                 <property name="label">×</property>
-                <signal name="clicked" handler="on_click_btn_mul"/>
                 <layout>
                   <property name="column">3</property>
                   <property name="row">1</property>
@@ -232,7 +224,6 @@
             <child>
               <object class="GtkButton" id="btn_4">
                 <property name="label">4</property>
-                <signal name="clicked" handler="on_click_btn_4"/>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">2</property>
@@ -242,7 +233,6 @@
             <child>
               <object class="GtkButton" id="btn_5">
                 <property name="label">5</property>
-                <signal name="clicked" handler="on_click_btn_5"/>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">2</property>
@@ -252,7 +242,6 @@
             <child>
               <object class="GtkButton" id="btn_6">
                 <property name="label">6</property>
-                <signal name="clicked" handler="on_click_btn_6"/>
                 <layout>
                   <property name="column">2</property>
                   <property name="row">2</property>
@@ -262,7 +251,6 @@
             <child>
               <object class="GtkButton" id="btn_sub">
                 <property name="label">-</property>
-                <signal name="clicked" handler="on_click_btn_sub"/>
                 <layout>
                   <property name="column">3</property>
                   <property name="row">2</property>
@@ -272,7 +260,6 @@
             <child>
               <object class="GtkButton" id="btn_1">
                 <property name="label">1</property>
-                <signal name="clicked" handler="on_click_btn_1"/>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">3</property>
@@ -282,7 +269,6 @@
             <child>
               <object class="GtkButton" id="btn_2">
                 <property name="label">2</property>
-                <signal name="clicked" handler="on_click_btn_2"/>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">3</property>
@@ -292,7 +278,6 @@
             <child>
               <object class="GtkButton" id="btn_3">
                 <property name="label">3</property>
-                <signal name="clicked" handler="on_click_btn_3"/>
                 <layout>
                   <property name="column">2</property>
                   <property name="row">3</property>
@@ -302,7 +287,6 @@
             <child>
               <object class="GtkButton" id="btn_add">
                 <property name="label">+</property>
-                <signal name="clicked" handler="on_click_btn_add"/>
                 <layout>
                   <property name="column">3</property>
                   <property name="row">3</property>
@@ -312,7 +296,6 @@
             <child>
               <object class="GtkButton" id="btn_0">
                 <property name="label">0</property>
-                <signal name="clicked" handler="on_click_btn_0"/>
                 <layout>
                   <property name="column">0</property>
                   <property name="row">4</property>
@@ -322,7 +305,6 @@
             <child>
               <object class="GtkButton" id="btn_dot">
                 <property name="label">.</property>
-                <signal name="clicked" handler="on_click_btn_dot"/>
                 <layout>
                   <property name="column">1</property>
                   <property name="row">4</property>
@@ -332,7 +314,6 @@
             <child>
               <object class="GtkButton" id="btn_delete">
                 <property name="label">⌫</property>
-                <signal name="clicked" handler="on_click_btn_delete"/>
                 <layout>
                   <property name="column">2</property>
                   <property name="row">4</property>
@@ -342,7 +323,6 @@
             <child>
               <object class="GtkButton" id="btn_eq">
                 <property name="label">=</property>
-                <signal name="clicked" handler="on_click_btn_eq"/>
                 <layout>
                   <property name="column">3</property>
                   <property name="row">4</property>
