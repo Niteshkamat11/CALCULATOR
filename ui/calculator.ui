@@ -1,0 +1,357 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0 -->
+<interface>
+  <!-- interface-name calculator.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkCssProvider" id="css_provider">
+    <!-- Custom object fragments -->
+    <property name="data">
+      window {
+        background-color: #1e1e2e;
+      }
+
+      #main_box {
+        background-color: #1e1e2e;
+      }
+
+      #display_entry {
+        background-color: #181825;
+        color: #cdd6f4;
+        border: none;
+        border-radius: 16px;
+        padding: 20px 24px;
+        font-size: 36px;
+        font-weight: 300;
+        margin-bottom: 8px;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+      }
+
+      button {
+        background-color: #313244;
+        color: #cdd6f4;
+        border: none;
+        border-radius: 14px;
+        font-size: 20px;
+        font-weight: 500;
+        padding: 18px;
+        transition: background-color 120ms ease, transform 80ms ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      }
+
+      button:hover {
+        background-color: #45475a;
+      }
+
+      button:active {
+        background-color: #585b70;
+        transform: scale(0.95);
+      }
+
+      #btn_clear {
+        background-color: #f38ba8;
+        color: #1e1e2e;
+        font-weight: 700;
+      }
+
+      #btn_clear:hover {
+        background-color: #eb6c90;
+      }
+
+      #btn_bracket,
+      #btn_percentage {
+        background-color: #45475a;
+        color: #a6e3a1;
+        font-weight: 600;
+      }
+
+      #btn_div,
+      #btn_mul,
+      #btn_sub,
+      #btn_add {
+        background-color: #cba6f7;
+        color: #1e1e2e;
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      #btn_div:hover,
+      #btn_mul:hover,
+      #btn_sub:hover,
+      #btn_add:hover {
+        background-color: #b48ee0;
+      }
+
+      #btn_eq {
+        background-color: #a6e3a1;
+        color: #1e1e2e;
+        font-weight: 700;
+        font-size: 24px;
+        box-shadow: 0 3px 10px rgba(166,227,161,0.3);
+      }
+
+      #btn_eq:hover {
+        background-color: #8ecf89;
+      }
+
+      #btn_delete {
+        background-color: #fab387;
+        color: #1e1e2e;
+        font-weight: 700;
+      }
+
+      #btn_delete:hover {
+        background-color: #e09870;
+      }
+
+      #btn_dot {
+        background-color: #45475a;
+        color: #cdd6f4;
+        font-size: 24px;
+        font-weight: 700;
+      }
+    </property>
+  </object>
+  <object class="GtkWindow" id="main_window">
+    <property name="default-height">419</property>
+    <property name="default-width">368</property>
+    <property name="resizable">False</property>
+    <property name="title">Calculator</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header_bar">
+        <property name="show-title-buttons">True</property>
+        <child type="title">
+          <object class="GtkLabel" id="title_label">
+            <property name="label">Calculator</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="main_box">
+        <property name="margin-bottom">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-start">20</property>
+        <property name="margin-top">20</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">14</property>
+        <child>
+          <object class="GtkEntry" id="display_entry">
+            <property name="editable">False</property>
+            <property name="placeholder-text">0</property>
+            <property name="xalign">1.0</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGrid" id="button_grid">
+            <property name="column-homogeneous">True</property>
+            <property name="column-spacing">10</property>
+            <property name="hexpand">True</property>
+            <property name="row-homogeneous">True</property>
+            <property name="row-spacing">10</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkButton" id="btn_clear">
+                <property name="label">AC</property>
+                <signal name="clicked" handler="on_click_btn_clear"/>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_bracket">
+                <property name="label">()</property>
+                <signal name="clicked" handler="on_click_btn_bracket"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_percentage">
+                <property name="label">%</property>
+                <signal name="clicked" handler="on_click_btn_percentage"/>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_div">
+                <property name="label">÷</property>
+                <signal name="clicked" handler="on_click_btn_div"/>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_7">
+                <property name="label">7</property>
+                <signal name="clicked" handler="on_click_btn_7"/>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_8">
+                <property name="label">8</property>
+                <signal name="clicked" handler="on_click_btn_8"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_9">
+                <property name="label">9</property>
+                <signal name="clicked" handler="on_click_btn_9"/>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_mul">
+                <property name="label">×</property>
+                <signal name="clicked" handler="on_click_btn_mul"/>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_4">
+                <property name="label">4</property>
+                <signal name="clicked" handler="on_click_btn_4"/>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_5">
+                <property name="label">5</property>
+                <signal name="clicked" handler="on_click_btn_5"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_6">
+                <property name="label">6</property>
+                <signal name="clicked" handler="on_click_btn_6"/>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_sub">
+                <property name="label">-</property>
+                <signal name="clicked" handler="on_click_btn_sub"/>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_1">
+                <property name="label">1</property>
+                <signal name="clicked" handler="on_click_btn_1"/>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_2">
+                <property name="label">2</property>
+                <signal name="clicked" handler="on_click_btn_2"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_3">
+                <property name="label">3</property>
+                <signal name="clicked" handler="on_click_btn_3"/>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_add">
+                <property name="label">+</property>
+                <signal name="clicked" handler="on_click_btn_add"/>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_0">
+                <property name="label">0</property>
+                <signal name="clicked" handler="on_click_btn_0"/>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_dot">
+                <property name="label">.</property>
+                <signal name="clicked" handler="on_click_btn_dot"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_delete">
+                <property name="label">⌫</property>
+                <signal name="clicked" handler="on_click_btn_delete"/>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_eq">
+                <property name="label">=</property>
+                <signal name="clicked" handler="on_click_btn_eq"/>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
