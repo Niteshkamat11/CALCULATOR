@@ -11,42 +11,49 @@ static void on_digit(GtkButton *btn, gpointer user_data) {
     char        buff[128];
 
     if (state->fresh_input) {
-        gtk_editable_set_text(GTK_EDITABLE(state->display), label);
+        state->current_number[0]= '\0';
         state->fresh_input = 0;
-    } else {
-        snprintf(buff, sizeof(buff), "%s%s", current, label);
-        gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
-    }
+
+        if(strcmp(current, "0")==0){
+            current = "";
+        }
+    } 
+    strcat(state->current_number,label);
+    snprintf(buff, sizeof(buff), "%s%s", current, label);
+    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
+    
 }
 //for operator like +,-,/,%,*
 static void on_operator(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
     const char *label   = gtk_button_get_label(btn);
+    char buff[128];
 
-    if (state->pending_op != 0 && !state->fresh_input) {
+    double second = atof(state->current_number);
+    if (state->pending_op != 0 ) {
         int    err    = 0;
-        double second = atof(current);
         state->result = calc_evaluate(state->result, second, state->pending_op, &err);
 
    } else {
-        state->result = atof(current);
+        state->result = second;
     }
-    char buff[128];
-    snprintf(buff, sizeof(buff), "%.10g %s", state->result,label);
+    snprintf(buff, sizeof(buff), "%s %s ", current,label);
     gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
 
     state->pending_op = label[0];
+    state->current_number[0] = '\0';
     state->fresh_input = 1;
 }
 //for = 
 static void on_equals(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    double      second  = atof(current);
+    double      second  = atof(state->current_number);
     int         err     = 0;
 
     double result = calc_evaluate(state->result, second, state->pending_op, &err);
+
 
     char buff[90];
     if (err) {
@@ -58,6 +65,7 @@ static void on_equals(GtkButton *btn, gpointer user_data) {
 
     state->result      = result;
     state->pending_op  = 0;
+    state->current_number[0] = '\0';
     state->fresh_input = 1;
 }
 
@@ -68,8 +76,7 @@ static void on_clear(GtkButton *btn , gpointer user_data){
     state->pending_op = 0;
     state->result = 0;
     state->fresh_input = 1;
-
-
+    state->current_number[0] = '\0';
 }
 static  void on_delete(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
