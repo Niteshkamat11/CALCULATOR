@@ -11,6 +11,7 @@ typedef struct{
     int fresh_input;
     char current_number[64];
     int open_bracket;
+    int fresh_equal;
 }calcstate;
 
 void signal_connect_all(GtkBuilder *builder, calcstate *state);

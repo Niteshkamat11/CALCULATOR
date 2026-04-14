@@ -9,20 +9,26 @@ static void on_digit(GtkButton *btn, gpointer user_data) {
     const char *label   = gtk_button_get_label(btn);
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
     char        buff[128];
-
+    if((strcmp(label,".")==0) && strchr(state->current_number,'.') != NULL){
+        return;
+    }
+    if(state->fresh_equal){
+        current = "";
+        state->fresh_equal = 0;
+    }
     if (state->fresh_input) {
         state->current_number[0]= '\0';
         state->fresh_input = 0;
-
-        if(strcmp(current, "0")==0){
+        if (strcmp(current, "0") == 0) {
             current = "";
         }
-    } 
+    }
     strcat(state->current_number,label);
     snprintf(buff, sizeof(buff), "%s%s", current, label);
     gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
     
 }
+
 //for operator like +,-,/,%,*
 static void on_operator(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
@@ -72,6 +78,7 @@ static void on_equals(GtkButton *btn, gpointer user_data) {
     state->pending_op  = 0;
     state->current_number[0] = '\0';
     state->fresh_input = 1;
+    state->fresh_equal = 1;
 }
 //for AC btn
 static void on_clear(GtkButton *btn , gpointer user_data){
@@ -82,7 +89,7 @@ static void on_clear(GtkButton *btn , gpointer user_data){
     state->result = 0;
     state->fresh_input = 1;
     state->current_number[0] = '\0';
-    state->open_bracket--;
+        state->open_bracket=0;
 }
 //for btn ⌫ 
 static  void on_delete(GtkButton *btn , gpointer user_data){
