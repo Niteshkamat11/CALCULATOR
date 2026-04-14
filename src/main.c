@@ -4,6 +4,7 @@
 static void activate(GtkApplication *app, gpointer user_data) {
 
     calcstate *state = g_malloc0(sizeof(calcstate));
+    // malloc0 it starts everything from 0 so pending_op =0 , fresh_input = 0 , result = 0 , current_number = 0 maclloc is memory allocatory setted intially at 0
     state->fresh_input = 1;
 
     // 2. Load the UI from the 'ui' directory

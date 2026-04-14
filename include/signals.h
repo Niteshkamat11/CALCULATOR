@@ -10,6 +10,7 @@ typedef struct{
     char pending_op;
     int fresh_input;
     char current_number[64];
+    int open_bracket;
 }calcstate;
 
 void signal_connect_all(GtkBuilder *builder, calcstate *state);

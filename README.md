@@ -43,12 +43,19 @@ From the root directory:
 ```bash
 ./nit-calculator
 ```
+##Cleanup
+To remove the compiled binaries and object file:
+```bash
+make clean
+```
 
 
 ## Project Structure
-src/       → C source files
+```text
+src/       → C source files 
 include/   → header files
 ui/        → Cambalache UI and CSS files
+```
 
 
 ## Roadmap / Future Improvements

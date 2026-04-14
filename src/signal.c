@@ -41,7 +41,12 @@ static void on_operator(GtkButton *btn, gpointer user_data) {
     snprintf(buff, sizeof(buff), "%s %s ", current,label);
     gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
 
-    state->pending_op = label[0];
+    if      (strcmp(label, "+") == 0) state->pending_op = '+';
+    else if (strcmp(label, "-") == 0) state->pending_op = '-';
+    else if (strcmp(label, "×") == 0) state->pending_op = '*';
+    else if (strcmp(label, "÷") == 0) state->pending_op = '/';
+    else if (strcmp(label, "%") == 0) state->pending_op = '%';
+
     state->current_number[0] = '\0';
     state->fresh_input = 1;
 }
@@ -68,7 +73,7 @@ static void on_equals(GtkButton *btn, gpointer user_data) {
     state->current_number[0] = '\0';
     state->fresh_input = 1;
 }
-
+//for AC btn
 static void on_clear(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
     gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
@@ -77,7 +82,9 @@ static void on_clear(GtkButton *btn , gpointer user_data){
     state->result = 0;
     state->fresh_input = 1;
     state->current_number[0] = '\0';
+    state->open_bracket--;
 }
+//for btn ⌫ 
 static  void on_delete(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
@@ -86,12 +93,33 @@ static  void on_delete(GtkButton *btn , gpointer user_data){
         gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
         state->fresh_input = 1;
     }else{
+        if(current[len -1]== '(') state->open_bracket--;
+        if(current[len -1]== ')') state->open_bracket++;
+
         char buff[128];
         strncpy(buff, current,len-1);
         buff[len-1] = '\0';
         gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
     }
-    
+}
+
+//for bracket 
+static void on_bracket(GtkButton *btn , gpointer user_data){
+    calcstate *state = (calcstate *)user_data;
+    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
+    char buff[128];
+    if(strcmp(current , "0")==0){
+        current = "";
+    }
+    if(state->open_bracket==0) {
+        snprintf(buff, sizeof(buff), "%s(", current);
+        state->open_bracket++;
+    }
+    else{
+        snprintf(buff, sizeof(buff), "%s)", current);
+        state->open_bracket--;
+    }
+    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
 }
 //connecting the signal with function above 
 void signal_connect_all(GtkBuilder *builder, calcstate *state) {
@@ -111,8 +139,8 @@ void signal_connect_all(GtkBuilder *builder, calcstate *state) {
     }
 
     
-    const char *ops[] = {"btn_add", "btn_sub", "btn_mul", "btn_div", "btn_percentage", "btn_bracket"};
-    for (int i = 0; i < 6; i++) {
+    const char *ops[] = {"btn_add", "btn_sub", "btn_mul", "btn_div", "btn_percentage"};
+    for (int i = 0; i < 5; i++) {
         GObject *btn = gtk_builder_get_object(builder, ops[i]);
         if (btn) {
             g_signal_connect(btn, "clicked", G_CALLBACK(on_operator), state);
@@ -122,6 +150,8 @@ void signal_connect_all(GtkBuilder *builder, calcstate *state) {
     g_signal_connect(gtk_builder_get_object(builder, "btn_clear"), "clicked", G_CALLBACK(on_clear), state);
     g_signal_connect(gtk_builder_get_object(builder, "btn_delete"), "clicked", G_CALLBACK(on_delete), state);
     g_signal_connect(gtk_builder_get_object(builder, "btn_eq"), "clicked", G_CALLBACK(on_equals), state);
+    g_signal_connect(gtk_builder_get_object(builder, "btn_bracket"), "clicked", G_CALLBACK(on_bracket), state);
+
 }
 
 
