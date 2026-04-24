@@ -8,10 +8,10 @@ static void on_digit(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
     const char *label   = gtk_button_get_label(btn);
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    char        buff[128];
+    char  buff[128];
     if((strcmp(label,".")==0) && strchr(state->current_number,'.') != NULL){
         return;
-    }
+    } 
     if(state->fresh_equal){
         current = "";
         state->fresh_equal = 0;
@@ -19,9 +19,9 @@ static void on_digit(GtkButton *btn, gpointer user_data) {
     if (state->fresh_input) {
         state->current_number[0]= '\0';
         state->fresh_input = 0;
-        if (strcmp(current, "0") == 0) {
-            current = "";
-        }
+        // if (strcmp(current, "0") == 0) {
+        //     current = "";
+        // }
     }
     strcat(state->current_number,label);
     snprintf(buff, sizeof(buff), "%s%s", current, label);
@@ -83,29 +83,50 @@ static void on_equals(GtkButton *btn, gpointer user_data) {
 //for AC btn
 static void on_clear(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
-    gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
+    gtk_editable_set_text(GTK_EDITABLE(state->display), "");
 
     state->pending_op = 0;
     state->result = 0;
     state->fresh_input = 1;
     state->current_number[0] = '\0';
-        state->open_bracket=0;
+    state->open_bracket=0;
 }
 //for btn ⌫ 
 static  void on_delete(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
     const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    int len  = strlen(current);
+    int len  = strlen(current); 
+    char buff[128]; // added here 
     if(len<=1){
-        gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
+        gtk_editable_set_text(GTK_EDITABLE(state->display), "");
         state->fresh_input = 1;
+        state->current_number[0]='\0';
+        state->pending_op=0;
+        return;
+    }
+    int to_remove = 1;
+    char last_char = current[len-1];
+    if(current[len-1]==' ' && len>=3){
+        to_remove = 3;
+        state->pending_op = 0;
+    }else if (last_char == '('){
+        state->open_bracket--;
+    }else if (last_char == ')'){
+        state->open_bracket++;
     }else{
-        if(current[len -1]== '(') state->open_bracket--;
-        if(current[len -1]== ')') state->open_bracket++;
-
-        char buff[128];
-        strncpy(buff, current,len-1);
-        buff[len-1] = '\0';
+        int cur_num_len = strlen(state->current_number);
+        if(cur_num_len > 0){
+            state->current_number[cur_num_len -1] = '\0';
+        }
+    }
+    int new_len = len - to_remove;
+    if(new_len<0) new_len = 0;
+    strncpy(buff, current,new_len);
+    buff[new_len] = '\0';
+    if (new_len == 0 || strcmp(buff, " ") == 0) {
+        gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
+        state->current_number[0] = '\0';
+    } else {
         gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
     }
 }
@@ -160,11 +181,4 @@ void signal_connect_all(GtkBuilder *builder, calcstate *state) {
     g_signal_connect(gtk_builder_get_object(builder, "btn_bracket"), "clicked", G_CALLBACK(on_bracket), state);
 
 }
-
-
-
-
-
-
-
 

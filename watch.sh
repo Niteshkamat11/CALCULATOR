@@ -5,11 +5,14 @@ do
    
     ./nit-calculator &
 
-    PID=$!
+
 
     inotifywait -e modify include/ src/ ui/ 
 
-    kill PID
+
+
+    pkill -9 nit-calculator 
+
 
 done
 
