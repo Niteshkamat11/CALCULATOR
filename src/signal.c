@@ -5,149 +5,87 @@
 
 //for all the digit 0-9
 static void on_digit(GtkButton *btn, gpointer user_data) {
-    calcstate  *state   = (calcstate *)user_data;
-    const char *label   = gtk_button_get_label(btn);
-    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    char  buff[128];
-    if((strcmp(label,".")==0) && strchr(state->current_number,'.') != NULL){
-        return;
-    } 
-    if(state->fresh_equal){
-        current = "";
-        state->fresh_equal = 0;
-    }
-    if (state->fresh_input) {
-        state->current_number[0]= '\0';
-        state->fresh_input = 0;
-        // if (strcmp(current, "0") == 0) {
-        //     current = "";
-        // }
-    }
-    strcat(state->current_number,label);
-    snprintf(buff, sizeof(buff), "%s%s", current, label);
-    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
-    
-}
+
+    engine_digit((calcstate *)user_data, gtk_button_get_label(btn));
+ }
 
 //for operator like +,-,/,%,*
 static void on_operator(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
-    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    const char *label   = gtk_button_get_label(btn);
-    char buff[128];
+    engine_operator(state , gtk_button_get_label(btn));
 
-    double second = atof(state->current_number);
-    if (state->pending_op != 0 ) {
-        int    err    = 0;
-        state->result = calc_evaluate(state->result, second, state->pending_op, &err);
-
-   } else {
-        state->result = second;
-    }
-    snprintf(buff, sizeof(buff), "%s %s ", current,label);
-    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
-
-    if      (strcmp(label, "+") == 0) state->pending_op = '+';
-    else if (strcmp(label, "-") == 0) state->pending_op = '-';
-    else if (strcmp(label, "×") == 0) state->pending_op = '*';
-    else if (strcmp(label, "÷") == 0) state->pending_op = '/';
-    else if (strcmp(label, "%") == 0) state->pending_op = '%';
-
-    state->current_number[0] = '\0';
-    state->fresh_input = 1;
 }
 //for = 
 static void on_equals(GtkButton *btn, gpointer user_data) {
     calcstate  *state   = (calcstate *)user_data;
-    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    double      second  = atof(state->current_number);
-    int         err     = 0;
-
-    double result = calc_evaluate(state->result, second, state->pending_op, &err);
-
-
-    char buff[90];
-    if (err) {
-        gtk_editable_set_text(GTK_EDITABLE(state->display), "Error");
-    } else {
-        snprintf(buff, sizeof(buff), "%.10g", result);
-        gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
-    }
-
-    state->result      = result;
-    state->pending_op  = 0;
-    state->current_number[0] = '\0';
-    state->fresh_input = 1;
-    state->fresh_equal = 1;
-}
+    engine_equals(state);
+ }
 //for AC btn
 static void on_clear(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
-    gtk_editable_set_text(GTK_EDITABLE(state->display), "");
-
-    state->pending_op = 0;
-    state->result = 0;
-    state->fresh_input = 1;
-    state->current_number[0] = '\0';
-    state->open_bracket=0;
+    engine_clear(state);
 }
 //for btn ⌫ 
 static  void on_delete(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
-    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    int len  = strlen(current); 
-    char buff[128]; // added here 
-    if(len<=1){
-        gtk_editable_set_text(GTK_EDITABLE(state->display), "");
-        state->fresh_input = 1;
-        state->current_number[0]='\0';
-        state->pending_op=0;
-        return;
-    }
-    int to_remove = 1;
-    char last_char = current[len-1];
-    if(current[len-1]==' ' && len>=3){
-        to_remove = 3;
-        state->pending_op = 0;
-    }else if (last_char == '('){
-        state->open_bracket--;
-    }else if (last_char == ')'){
-        state->open_bracket++;
-    }else{
-        int cur_num_len = strlen(state->current_number);
-        if(cur_num_len > 0){
-            state->current_number[cur_num_len -1] = '\0';
-        }
-    }
-    int new_len = len - to_remove;
-    if(new_len<0) new_len = 0;
-    strncpy(buff, current,new_len);
-    buff[new_len] = '\0';
-    if (new_len == 0 || strcmp(buff, " ") == 0) {
-        gtk_editable_set_text(GTK_EDITABLE(state->display), "0");
-        state->current_number[0] = '\0';
-    } else {
-        gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
-    }
+    engine_delete(state);
 }
 
 //for bracket 
 static void on_bracket(GtkButton *btn , gpointer user_data){
     calcstate *state = (calcstate *)user_data;
-    const char *current = gtk_editable_get_text(GTK_EDITABLE(state->display));
-    char buff[128];
-    if(strcmp(current , "0")==0){
-        current = "";
+    engine_bracket(state );
+
+}
+
+//for keyboard input
+static gboolean on_key_press(GtkEventControllerKey *controller,
+                              guint keyval,
+                              guint keycode,
+                              GdkModifierType state,
+                              gpointer user_data) {
+    calcstate *s = (calcstate *)user_data;
+
+    switch (keyval) {
+        case GDK_KEY_0: case GDK_KEY_KP_0: engine_digit(s, "0"); return TRUE;
+        case GDK_KEY_1: case GDK_KEY_KP_1: engine_digit(s, "1"); return TRUE;
+        case GDK_KEY_2: case GDK_KEY_KP_2: engine_digit(s, "2"); return TRUE;
+        case GDK_KEY_3: case GDK_KEY_KP_3: engine_digit(s, "3"); return TRUE;
+        case GDK_KEY_4: case GDK_KEY_KP_4: engine_digit(s, "4"); return TRUE;
+        case GDK_KEY_5: case GDK_KEY_KP_5: engine_digit(s, "5"); return TRUE;
+        case GDK_KEY_6: case GDK_KEY_KP_6: engine_digit(s, "6"); return TRUE;
+        case GDK_KEY_7: case GDK_KEY_KP_7: engine_digit(s, "7"); return TRUE;
+        case GDK_KEY_8: case GDK_KEY_KP_8: engine_digit(s, "8"); return TRUE;
+        case GDK_KEY_9: case GDK_KEY_KP_9: engine_digit(s, "9"); return TRUE;
+
+        case GDK_KEY_period:
+        case GDK_KEY_KP_Decimal:    engine_digit(s, ".");    return TRUE;
+
+        case GDK_KEY_plus:
+        case GDK_KEY_KP_Add:        engine_operator(s, "+"); return TRUE;
+
+        case GDK_KEY_minus:
+        case GDK_KEY_KP_Subtract:   engine_operator(s, "-"); return TRUE;
+
+        case GDK_KEY_asterisk:
+        case GDK_KEY_KP_Multiply:   engine_operator(s, "×"); return TRUE;
+
+        case GDK_KEY_slash:
+        case GDK_KEY_KP_Divide:     engine_operator(s, "÷"); return TRUE;
+
+        case GDK_KEY_percent:       engine_operator(s, "%"); return TRUE;
+
+        case GDK_KEY_Return:
+        case GDK_KEY_KP_Enter:
+        case GDK_KEY_equal:         engine_equals(s);        return TRUE;
+
+        case GDK_KEY_BackSpace:     engine_delete(s);        return TRUE;
+        case GDK_KEY_Escape:        engine_clear(s);         return TRUE;
+
+        case GDK_KEY_parenleft:
+        case GDK_KEY_parenright:    engine_bracket(s);       return TRUE;
     }
-    if(state->open_bracket==0) {
-        snprintf(buff, sizeof(buff), "%s(", current);
-        state->open_bracket++;
-    }
-    else{
-        snprintf(buff, sizeof(buff), "%s)", current);
-        state->open_bracket--;
-    }
-    gtk_editable_set_text(GTK_EDITABLE(state->display), buff);
+    return FALSE;
 }
 //connecting the signal with function above 
 void signal_connect_all(GtkBuilder *builder, calcstate *state) {
@@ -175,10 +113,20 @@ void signal_connect_all(GtkBuilder *builder, calcstate *state) {
         }
     }
 
+    //keyboard input 
+    
+
+
     g_signal_connect(gtk_builder_get_object(builder, "btn_clear"), "clicked", G_CALLBACK(on_clear), state);
     g_signal_connect(gtk_builder_get_object(builder, "btn_delete"), "clicked", G_CALLBACK(on_delete), state);
     g_signal_connect(gtk_builder_get_object(builder, "btn_eq"), "clicked", G_CALLBACK(on_equals), state);
     g_signal_connect(gtk_builder_get_object(builder, "btn_bracket"), "clicked", G_CALLBACK(on_bracket), state);
 
+
+    GtkWidget *window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
+    GtkEventControllerKey *key_ctrl = GTK_EVENT_CONTROLLER_KEY(gtk_event_controller_key_new());
+    gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(key_ctrl), GTK_PHASE_CAPTURE);
+    g_signal_connect(key_ctrl, "key-pressed", G_CALLBACK(on_key_press), state);
+    gtk_widget_add_controller(window, GTK_EVENT_CONTROLLER(key_ctrl));
 }
 

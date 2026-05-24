@@ -26,7 +26,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(),
         GTK_STYLE_PROVIDER(css),
-        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+        GTK_STYLE_PROVIDER_PRIORITY_USER
 );
 
     // 5. Show the window
